@@ -1,19 +1,38 @@
 package exia.projetrecherche;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
+import android.hardware.Camera;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.WindowManager;
+
+import java.io.IOException;
+import java.util.List;
 
 import jp.epson.moverio.bt200.*;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener,SurfaceHolder.Callback{
+    private Camera camera;
+    private SurfaceView imageCamera;
+    private Boolean isPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        isPreview = false;
         setContentView(R.layout.activity_main);
+        imageCamera = (SurfaceView) findViewById(R.id.imageCamera);
+        InitializeCamera();
     }
 
     @Override
@@ -36,5 +55,71 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        camera = Camera.open();
+    }
+
+    @Override
+    public void onClick(View view) {
+        /*if(view.getId() == R.id.BoutonTakePicture){
+            if (camera != null) {
+                SavePicture();
+
+            }
+        }*/
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        if (camera == null)
+            camera = Camera.open();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        if (isPreview) {
+            camera.stopPreview();
+        }
+        Camera.Parameters parameters = camera.getParameters();
+        //parameters.setPreviewSize(imageCamera.getWidth(), imageCamera.getHeight());
+        parameters.setJpegQuality(100);
+        //parameters.setZoom(2);
+        camera.setParameters(parameters);
+        try {
+            camera.setPreviewDisplay(imageCamera.getHolder());
+        } catch (IOException e) {
+        }
+        camera.startPreview();
+        isPreview = true;
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        if (camera != null) {
+            camera.stopPreview();
+            isPreview = false;
+            camera.release();
+        }
+    }
+
+    public void InitializeCamera() {
+
+        imageCamera.getHolder().addCallback(this);
+
+        imageCamera.getHolder().setType(
+                SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 }
