@@ -12,6 +12,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import org.artoolkit.ar.base.ARActivity;
+import org.artoolkit.ar.base.rendering.ARRenderer;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,20 +23,20 @@ import java.util.List;
 import jp.epson.moverio.bt200.*;
 
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener,SurfaceHolder.Callback{
-    private Camera camera;
-    private SurfaceView imageCamera;
-    private Boolean isPreview;
+public class MainActivity extends ARActivity {
+    //private Camera camera;
+    //private SurfaceView imageCamera;
+    //private Boolean isPreview;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+       /* getWindow().setFormat(PixelFormat.TRANSLUCENT);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        isPreview = false;
+        isPreview = false;*/
         setContentView(R.layout.activity_main);
-        imageCamera = (SurfaceView) findViewById(R.id.imageCamera);
-        InitializeCamera();
+        //imageCamera = (SurfaceView) findViewById(R.id.imageCamera);
+        //InitializeCamera();
     }
 
     @Override
@@ -57,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     @Override
     public void onPause() {
         super.onPause();
@@ -74,12 +79,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        /*if(view.getId() == R.id.BoutonTakePicture){
-            if (camera != null) {
-                SavePicture();
 
-            }
-        }*/
     }
 
     @Override
@@ -121,5 +121,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         imageCamera.getHolder().setType(
                 SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }*/
+
+    @Override
+    protected ARRenderer supplyRenderer() {
+        return new SimpleRenderer();
+    }
+
+    @Override
+    protected FrameLayout supplyFrameLayout() {
+        return (FrameLayout)this.findViewById(R.id.affichage);
     }
 }
