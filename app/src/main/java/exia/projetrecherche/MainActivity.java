@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import org.artoolkit.ar.base.ARActivity;
+import org.artoolkit.ar.base.assets.AssetHelper;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 
 import java.io.IOException;
@@ -31,12 +32,9 @@ public class MainActivity extends ARActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       /* getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        isPreview = false;*/
         setContentView(R.layout.activity_main);
-        //imageCamera = (SurfaceView) findViewById(R.id.imageCamera);
-        //InitializeCamera();
+        AssetHelper assetHelper = new AssetHelper(getAssets());
+        assetHelper.cacheAssetFolder(this, "Data");
     }
 
     @Override
@@ -60,68 +58,6 @@ public class MainActivity extends ARActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (camera != null) {
-            camera.release();
-            camera = null;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        camera = Camera.open();
-    }
-
-    @Override
-    public void onClick(View view) {
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        if (camera == null)
-            camera = Camera.open();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        if (isPreview) {
-            camera.stopPreview();
-        }
-        Camera.Parameters parameters = camera.getParameters();
-        //parameters.setPreviewSize(imageCamera.getWidth(), imageCamera.getHeight());
-        parameters.setJpegQuality(100);
-        //parameters.setZoom(2);
-        camera.setParameters(parameters);
-        try {
-            camera.setPreviewDisplay(imageCamera.getHolder());
-        } catch (IOException e) {
-        }
-        camera.startPreview();
-        isPreview = true;
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        if (camera != null) {
-            camera.stopPreview();
-            isPreview = false;
-            camera.release();
-        }
-    }
-
-    public void InitializeCamera() {
-
-        imageCamera.getHolder().addCallback(this);
-
-        imageCamera.getHolder().setType(
-                SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-    }*/
 
     @Override
     protected ARRenderer supplyRenderer() {
